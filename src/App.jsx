@@ -34,15 +34,15 @@ const App = () => {
 
   return (
     <div className="container">
-      <h1>University Search Panel</h1>
+      <h1>University Finder</h1>
       <div className="form-group">
         <label className="label" htmlFor="country">
-          Select Country:
+          <h4>Select Country:</h4>
         </label>
         <input
           id="country"
           className="input"
-          type="text" placeholder='Enter a Country'
+          type="text" placeholder='      Enter a Country'
           value={country}
           onChange={handleCountryChange}
         />
@@ -64,7 +64,7 @@ const App = () => {
           ))}
         </>
       ) : (
-        <p>No universities found for the selected country.</p>
+        <p style={{fontWeight:700, fontSize: "20px"}}>No universities found for the selected country.</p>
       )}
     </div>
   );
