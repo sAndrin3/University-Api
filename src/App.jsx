@@ -7,7 +7,7 @@ const App = () => {
 
   useEffect(() => {
     if (country) {
-      fetch(`http://universities.hipolabs.com/search?country=${country}`)
+      fetch(`https://universitiesapi.onrender.com/v1/api/universities/${country}`)
         .then(response => response.json())
         .then(data => setUniversities(data))
         .catch(error => console.log(error));
@@ -20,7 +20,7 @@ const App = () => {
 
   const handleSearch = () => {
     if (country) {
-      fetch(`http://universities.hipolabs.com/search?country=${country}`)
+      fetch(`https://universitiesapi.onrender.com/v1/api/universities/${country}`)
         .then(response => response.json())
         .then(data => setUniversities(data))
         .catch(error => console.log(error));
