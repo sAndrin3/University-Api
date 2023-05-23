@@ -4,15 +4,28 @@ import './App.css';
 const App = () => {
   const [country, setCountry] = useState('');
   const [universities, setUniversities] = useState([]);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     if (country) {
-      fetch(`https://universitiesapi.onrender.com/v1/api/universities/${country}`)
-        .then(response => response.json())
-        .then(data => setUniversities(data))
-        .catch(error => console.log(error));
+      fetchUniversities(country);
     }
   }, [country]);
+
+  const fetchUniversities = async (country) => {
+    try {
+      const response = await fetch(`https://universitiesapi.onrender.com/v1/api/universities/${country}`);
+      if (!response.ok) {
+        throw new Error('Failed to fetch universities');
+      }
+      const data = await response.json();
+      setUniversities(data);
+      setError(null);
+    } catch (error) {
+      setUniversities([]);
+      setError('Failed to fetch universities. Please try again.');
+    }
+  };
 
   const handleCountryChange = event => {
     setCountry(event.target.value);
@@ -20,16 +33,14 @@ const App = () => {
 
   const handleSearch = () => {
     if (country) {
-      fetch(`https://universitiesapi.onrender.com/v1/api/universities/${country}`)
-        .then(response => response.json())
-        .then(data => setUniversities(data))
-        .catch(error => console.log(error));
+      fetchUniversities(country);
     }
   };
 
   const handleClear = () => {
     setCountry('');
     setUniversities([]);
+    setError(null);
   };
 
   return (
@@ -42,11 +53,12 @@ const App = () => {
         <input
           id="country"
           className="input"
-          type="text" placeholder='      Enter a Country'
+          type="text"
+          placeholder="Enter a Country"
           value={country}
           onChange={handleCountryChange}
         />
-        <button className="button" onClick={handleSearch}  style={{ marginRight: '5px' }}>Search</button>
+        <button className="button" onClick={handleSearch} style={{ marginRight: '5px' }}>Search</button>
         <button className="button" onClick={handleClear}>Clear</button>
       </div>
       {universities.length > 0 ? (
@@ -57,14 +69,24 @@ const App = () => {
               <h3 className="university-name">{university.name}</h3>
               <p className="university-info">
                 <strong>Country:</strong> {university.country}<br />
-                <strong>Web Page:</strong> <a href={university.web_pages[0]} target="_blank" rel="noopener noreferrer">{university.web_pages[0]}</a><br />
-                <strong>Domain:</strong> <a href={university.domains[0]} target="_blank" rel="noopener noreferrer">{university.domains[0]}</a>
+                <strong>Web Page:</strong> {university.web_pages && university.web_pages[0] ? (
+                  <a href={university.web_pages[0]} target="_blank" rel="noopener noreferrer">{university.web_pages[0]}</a>
+                ) : (
+                  'N/A'
+                )}<br />
+                <strong>Domain:</strong> {university.domains && university.domains[0] ? (
+                  <a href={university.domains[0]} target="_blank" rel="noopener noreferrer">{university.domains[0]}</a>
+                ) : (
+                  'N/A'
+                )}
               </p>
             </div>
           ))}
         </>
       ) : (
-        <p style={{fontWeight:700, fontSize: "20px"}}>No universities found for the selected country.</p>
+        <p style={{ fontWeight: 700, fontSize: "20px" }}>
+          {error ? error : 'No universities found for the selected country.'}
+        </p>
       )}
     </div>
   );
